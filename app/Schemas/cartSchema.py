@@ -9,3 +9,4 @@ class CartCreate(BaseModel):
 
 class updateQuantity(BaseModel):
     quantity: Optional[int] = Field(1, title="Quantity of Product")
+
