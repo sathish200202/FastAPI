@@ -31,9 +31,27 @@ def add_item(item: ProductCreate, db:Session = Depends(get_db)):
 @router.put("/update-product/{product_id}", response_model = ProductOut)
 def update_product(product_id: int, updateProduct: ProductCreate, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == product_id).first()
+    print(updateProduct)
+    if_updated = False
     if product:
-        for key, value in updateProduct.dict().items():
-            setattr(product, key, value)
+        if updateProduct.product_name is not None:
+            product.product_name = updateProduct.product_name
+            if_updated = True
+
+        if updateProduct.price is not None:
+            product.price = updateProduct.price
+            if_updated = True
+
+        if updateProduct.category is not None:
+            product.category = updateProduct.category
+            if_updated = True
+
+        if updateProduct.quantity is not None:
+            product.quantity = updateProduct.quantity
+            if_updated = True
+
+        if not if_updated:
+            return JSONResponse(status_code=400, content={"message": "No changes made"})
             
         db.commit()
         db.refresh(product)
@@ -54,6 +72,7 @@ def delete_product(product_id: int, db: Session = Depends(get_db), description: 
     return JSONResponse(status_code=200, content={"message": "Product deleted successfully"})
 
 
+#Users controller
 @router.get("/get-users")
 def get_all_users(db: Session = Depends(get_db)):
     all_users = db.query(User).all()
@@ -73,3 +92,4 @@ def delete_user(user_id: int, db: Session = Depends(get_db), description: str = 
     db.commit()
 
     return JSONResponse(status_code=200, content={"message": "User deleted successfully"})
+
