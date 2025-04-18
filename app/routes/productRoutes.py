@@ -14,7 +14,7 @@ def Home():
     return {"message": "Hello, world! welcome to the page"}
 
 
-@router.get("/inventory", response_model = list[ProductOut])
+@router.get("/inventory")
 def get_inventory(db: Session = Depends(get_db)):
     all_products = db.query(Product).all()
     if all_products:
@@ -24,7 +24,7 @@ def get_inventory(db: Session = Depends(get_db)):
      
 
 
-@router.get("/inventory/get-item/{product_id}", response_model = ProductOut)
+@router.get("/inventory/get-item/{product_id}")
 def get_product_by_id(product_id: int = Path(..., description= "The Id of the product you want to view", gt=0, lt=4), db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == product_id).first()
     if product:
