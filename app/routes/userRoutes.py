@@ -48,6 +48,11 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     if not verify_password(user.password, existing_user.hashed_password):
         return JSONResponse(status_code=400, content={"message": "Invalid credentials"})
     
+    #user acitve
+    existing_user.is_active = True
+    db.commit()
+
+
     access_token = create_access_token(data={"sub": user.username})
 
     return JSONResponse(status_code=200, content={
@@ -95,7 +100,12 @@ def get_profile(request: Request, db: Session = Depends(get_db)):
 
 
 @router.post("/logout")
-def logout(response: Response):
+def logout(request: Request, response: Response, db: Session = Depends(get_db)):
+
+    user = get_current_user(request, db, User)
+    #user active
+    user.is_active = False
+    db.commit()
     response.delete_cookie(key="Authorization")
     return JSONResponse(status_code=200, content={"message": "Logged out successfully"})
 

@@ -12,6 +12,8 @@ from routes import productRoutes, userRoutes, adminRoutes, cartRoutes, orderRout
 
 load_dotenv()
 
+#drop the all tables
+
 #create DB and table
 Product.metadata.create_all(bind=engine)
 
